@@ -1,28 +1,38 @@
 package controller
 
 import (
-	"fmt"
-
+	"net/http"
 	"github.com/gporto95/crud-go/src/controller/model/request"
-
-	"github.com/gporto95/crud-go/src/configuration/rest_err"
-
+	"github.com/gporto95/crud-go/src/controller/model/response"
 	"github.com/gporto95/crud-go/src/configuration/validation"
-
 	"github.com/gin-gonic/gin"
+	"github.com/gporto95/crud-go/src/configuration/logger"
+	"go.uber.org/zap"
 )
 
 func CreateUser(c *gin.Context) {
+	logger.Info("Init CreateUser controller",
+		zap.String("journey", "createUser"),
+	)
 	var userRequest request.UserRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
-		restErr := rest_err.NewBadRequestError(
-			fmt.Sprintf("There are some incorrect fields, error=%s", err.Error()))
-			errRest := validation.ValidateUserError(err)
+		logger.Error("Error trying to validate user info", err, zap.String("journey", "createUser"))
 
-		c.JSON(restErr.Code, errRest)
+		errRest := validation.ValidateUserError(err)
+
+		c.JSON(errRest.Code, errRest)
 		return
 	}
 
-	fmt.Println(userRequest)
+	response := response.UserResponse{
+		ID:    "123",
+		Name:  userRequest.Name,
+		Email: userRequest.Email,
+		Age:   userRequest.Age,
+	}
+
+	logger.Info("User created successfully", zap.String("journey", "createUser"))
+
+	c.JSON(http.StatusOK, response)
 }
