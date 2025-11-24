@@ -8,6 +8,7 @@ import (
 	"github.com/gporto95/crud-go/src/configuration/logger"
 	"go.uber.org/zap"
 	"github.com/gporto95/crud-go/src/model"
+	"github.com/gporto95/crud-go/src/model/service"
 )
 
 var (
@@ -36,7 +37,9 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	if err := domain.CreateUser(); err != nil {
+	service := service.NewUserDomainService()
+
+	if err := service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
