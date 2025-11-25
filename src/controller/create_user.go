@@ -2,13 +2,14 @@ package controller
 
 import (
 	"net/http"
-	"github.com/gporto95/crud-go/src/controller/model/request"
-	"github.com/gporto95/crud-go/src/configuration/validation"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gporto95/crud-go/src/configuration/logger"
-	"go.uber.org/zap"
+	"github.com/gporto95/crud-go/src/configuration/validation"
+	"github.com/gporto95/crud-go/src/controller/model/request"
 	"github.com/gporto95/crud-go/src/model"
 	"github.com/gporto95/crud-go/src/view"
+	"go.uber.org/zap"
 )
 
 var (
@@ -37,12 +38,18 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	if err := uc.service.CreateUser(domain); err != nil {
+	domainResult, err := uc.service.CreateUser(domain)
+
+	if err != nil {
+		logger.Error("Error trying to call CreateUser", err, zap.String("journey", "createUser"))
 		c.JSON(err.Code, err)
 		return
 	}
 
-	logger.Info("User created successfully", zap.String("journey", "createUser"))
+	logger.Info(
+		"User controller executed successfully",
+		zap.String("userId", domainResult.GetID()),
+		zap.String("journey", "createUser"))
 
-	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domainResult))
 }

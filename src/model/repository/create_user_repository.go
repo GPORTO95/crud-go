@@ -7,6 +7,9 @@ import (
 	"github.com/gporto95/crud-go/src/configuration/logger"
 	"github.com/gporto95/crud-go/src/configuration/rest_err"
 	"github.com/gporto95/crud-go/src/model"
+	"github.com/gporto95/crud-go/src/model/repository/entity/converter"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.uber.org/zap"
 )
 
 const (
@@ -20,11 +23,7 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	value, err := userDomain.GetJSONValue()
-	if err != nil {
-		logger.Error("Error getting user json value", err)
-		return nil, rest_err.NewInternalServerError(err.Error())
-	}
+	value := converter.ConvertDomainToEntity(userDomain)
 
 	result, err := collection.InsertOne(context.Background(), value)
 	if err != nil {
@@ -32,7 +31,14 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 
-	userDomain.SetID(result.InsertedID.(string))
+	if oid, ok := result.InsertedID.(bson.ObjectID); ok {
+		value.ID = oid
+	}
 
-	return userDomain, nil
+	logger.Info(
+		"CreateUser repository executed successfully",
+		zap.String("user_id", value.ID.Hex()),
+		zap.String("journey", "createUser"))
+
+	return converter.ConvertEntityToDomain(*value), nil
 }

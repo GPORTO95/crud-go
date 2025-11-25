@@ -1,30 +1,33 @@
 package main
 
 import (
+	"context"
+	"log"
+
 	"github.com/gin-gonic/gin"
+	"github.com/gporto95/crud-go/src/configuration/database/mongodb"
 	"github.com/gporto95/crud-go/src/configuration/logger"
-	"github.com/gporto95/crud-go/src/controller"
 	"github.com/gporto95/crud-go/src/controller/routes"
-	"github.com/gporto95/crud-go/src/model/service"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	logger.Info("Starting the application...")
 
-	err := godotenv.Load()
+	godotenv.Load()
+
+	database, err := mongodb.NewMongoDBConnection(context.Background())
 	if err != nil {
-		logger.Error("Error loading .env file", err)
+		log.Fatalf("Error trying to connect to database, error=%s \n", err.Error())
+		return
 	}
 
-	service := service.NewUserDomainService()
-	userController := controller.NewUserControllerInterface(service)
+	userController := initDependencies(database)
 
 	router := gin.Default()
-
 	routes.InitRoutes(&router.RouterGroup, userController)
 
 	if err := router.Run(":8080"); err != nil {
-		logger.Error("Error to start application... ", err)
+		log.Fatal(err)
 	}
 }
