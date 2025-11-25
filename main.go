@@ -7,6 +7,7 @@ import (
 	"github.com/gporto95/crud-go/src/model/service"
 	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
+	"github.com/gporto95/crud-go/src/configuration/database/mongodb"
 )
 
 func main() {
@@ -16,6 +17,8 @@ func main() {
 	if err != nil {
 		logger.Error("Error loading .env file", err)
 	}
+
+	mongodb.InitConnection()
 
 	service := service.NewUserDomainService()
 	userController := controller.NewUserControllerInterface(service)
