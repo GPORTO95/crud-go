@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"github.com/gporto95/crud-go/src/model/repository/entity/converter"
 	"go.uber.org/zap"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr) {
@@ -54,7 +55,8 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 
 	userEntity := &entity.UserEntity{}
 
-	filter := bson.D{{Key: "_id", Value: id}}
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objectId}}
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
