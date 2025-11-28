@@ -1,19 +1,18 @@
 package repository
 
 import (
-	"os"
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/gporto95/crud-go/src/configuration/logger"
 	"github.com/gporto95/crud-go/src/configuration/rest_err"
 	"github.com/gporto95/crud-go/src/model"
 	"github.com/gporto95/crud-go/src/model/repository/entity"
+	"github.com/gporto95/crud-go/src/model/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
-	"github.com/gporto95/crud-go/src/model/repository/entity/converter"
 	"go.uber.org/zap"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr) {
@@ -32,14 +31,14 @@ func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterfa
 			logger.Error(errorMessage, err, zap.String("journey", "findUserByEmail"))
 			return nil, rest_err.NewNotFoundError(errorMessage)
 		}
-		
+
 		errorMessage := "Error trying to find user by email"
 		logger.Error(errorMessage, err, zap.String("journey", "findUserByEmail"))
 		return nil, rest_err.NewInternalServerError(errorMessage)
 	}
 
 	logger.Info(
-		"FindUserByEmail repository executed successfully", 
+		"FindUserByEmail repository executed successfully",
 		zap.String("email", email),
 		zap.String("userId", userEntity.ID.Hex()),
 		zap.String("journey", "findUserByEmail"))
@@ -55,7 +54,7 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 
 	userEntity := &entity.UserEntity{}
 
-	objectId, _ := primitive.ObjectIDFromHex(id)
+	objectId, _ := bson.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objectId}}
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 	if err != nil {
@@ -64,14 +63,14 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 			logger.Error(errorMessage, err, zap.String("journey", "findUserById"))
 			return nil, rest_err.NewNotFoundError(errorMessage)
 		}
-		
+
 		errorMessage := "Error trying to find user by id"
 		logger.Error(errorMessage, err, zap.String("journey", "findUserById"))
 		return nil, rest_err.NewInternalServerError(errorMessage)
 	}
 
 	logger.Info(
-		"FindUserById repository executed successfully", 
+		"FindUserById repository executed successfully",
 		zap.String("userId", userEntity.ID.Hex()),
 		zap.String("journey", "findUserByEmail"))
 
