@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/gporto95/crud-go/src/controller"
 	"github.com/gin-gonic/gin"
+	"github.com/gporto95/crud-go/src/controller"
 )
 
 func InitRoutes(
@@ -14,4 +14,6 @@ func InitRoutes(
 	r.POST("/user/", userController.CreateUser)
 	r.PUT("/user/:userId", userController.UpdateUser)
 	r.DELETE("/user/:userId", userController.DeleteUser)
+
+	r.POST("/login", userController.LoginUser)
 }
