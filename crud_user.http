@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:8080
+
+### GET Logged User
+GET {{baseUrl}}/user/logged
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2UiOjEwLCJlbWFpbCI6InRlc3RlQHRlc3QuY29tIiwiZXhwIjoxNzY0ODQ2NjQyLCJpZCI6IjY5MjlmOGZiNDM2ZjNiYjZjMjQxMWVlMCIsIm5hbWUiOiJHYWJyaWVsIn0.14Ls3oviuW9UK2Y-qthSIhQ3D-nUgLX_4ijkYnJ3kCU
+
+### GET BY ID
+GET {{baseUrl}}/user/by-id/6927a6de3a1378f72c65a874
+Content-Type: application/json
+
+### GET BY EMAIL
+GET {{baseUrl}}/user/by-email/teste@test.com
+Content-Type: application/json
+
+### LOGIN USER
+POST {{baseUrl}}/login
+Content-Type: application/json; charset=utf-8
+
+{
+    "Email": "teste@test.com",
+    "Password": "Password@"
+}
+
+### CREATE USER
+POST {{baseUrl}}/user
+Content-Type: application/json
+{
+    "Name": "Gabriel",
+    "Age": 10,
+    "Email": "teste@test.com",
+    "Password": "Password@"
+}
+
+### UPDATE USER
+PUT {{baseUrl}}/user/6927a6d83a1378f72c65a873
+Content-Type: application/json
+{
+    "name": "Gabriel Teste",
+    "age": 11
+}
+
+### DELETE USER
+DELETE {{baseUrl}}/user/6927a6d83a1378f72c65a873
+Content-Type: application/json
