@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gporto95/crud-go/src/controller"
+	"github.com/gporto95/crud-go/src/model"
 )
 
 func InitRoutes(
@@ -11,7 +12,7 @@ func InitRoutes(
 
 	r.GET("/user/by-id/:userId", userController.FindUserById)
 	r.GET("/user/by-email/:userEmail", userController.FindUserByEmail)
-	r.GET("/user/logged", userController.FindUserLogged)
+	r.GET("/user/logged", model.VerifyTokenMiddleware, userController.FindUserLogged)
 
 	r.POST("/user/", userController.CreateUser)
 	r.POST("/login", userController.LoginUser)

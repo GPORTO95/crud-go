@@ -15,7 +15,7 @@ Content-Type: application/json
 
 ### LOGIN USER
 POST {{baseUrl}}/login
-Content-Type: application/json; charset=utf-8
+Content-Type: application/json
 
 {
     "Email": "teste@test.com",
@@ -25,16 +25,18 @@ Content-Type: application/json; charset=utf-8
 ### CREATE USER
 POST {{baseUrl}}/user
 Content-Type: application/json
+
 {
     "Name": "Gabriel",
     "Age": 10,
-    "Email": "teste@test.com",
+    "Email": "teste@test.io",
     "Password": "Password@"
 }
 
 ### UPDATE USER
-PUT {{baseUrl}}/user/6927a6d83a1378f72c65a873
+PUT {{baseUrl}}/user/6927a6d83a1378f72c65a873 
 Content-Type: application/json
+
 {
     "name": "Gabriel Teste",
     "age": 11
