@@ -25,7 +25,7 @@ func TestUserRepository_CreateUser(t *testing.T) {
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mtestDb.Close()
 
-	t.Run("when_sending_a_valid_domain_returns_success", func(mt *testing.T) {
+	mtestDb.Run("when_sending_a_valid_domain_returns_success", func(mt *testing.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 1},
 			{Key: "n", Value: 1},
