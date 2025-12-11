@@ -26,9 +26,9 @@ func TestUserRepository_FindUserByEmail(t *testing.T) {
 		userEntity := entity.UserEntity{
 			ID: primitive.NewObjectID(),
 			Email : "test@test.com",
-			Password: "test"
+			Password: "test",
 			Name: "test",
-			Age: 50
+			Age: 50,
 		}
 		mt.AddMockResponses(mtest.CreateCursorResponse(
 			1, fmt.Sprintf("%s.%s", databaseName, collectionName),
